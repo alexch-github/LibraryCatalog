@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Library</title>
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table-locale-all.min.js"></script>
+  
+    <link rel="import" href="navigation.html">
+    
+    <style>
+      .affix {
+          top: 0;
+          width: 100%;
+      }     
+    </style>
+    
+  </head>
+  
+  <body>
+    
+    <script>
+      var link = document.querySelector('link[rel=import]');
+      var content = link.import.querySelector('#navigation');
+      document.body.appendChild(content.cloneNode(true));
+    </script>
+  
+    <div class="container">
+      <div class="jumbotron">
+        <h3>Library Books</h3> 
+        <p>Find a book.</p> 
+      </div>
+    </div>
+     
+    <div class="container-fluid">
+      <table id="booktable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Authors</th>
+                <th>Publishing House</th>
+                <th>Library Items</th>
+            </tr>
+        </thead>
+        <tbody id=bookdata>
+        </tbody>
+      </table>
+    </div>
+    
+    <script>
+      $(document).ready(function () {
+        $('#navigation .nav a[href="' + this.location.pathname + '"]').parent().addClass('active');
+        
+        $.getJSON( "../books/", function( data ) {
+            console.log(data);
+           
+               
+            $.each( data, function( key, book ) {              
+              title = "<td>" + book.title + "</td>";
+              authors = "";
+              $.each( book.authors, function( key, author ) {
+                authors = authors + ", " + author.name ;
+              });
+              authors = "<td>" + authors.substring(2) + "</td>";
+              publishingHouse = "<td>" + book.publishingHouse.name + "</td>";
+              libraryItems = "";
+              $.each( book.libraryItems, function( key, li ) {
+                libraryItems = libraryItems + "<tr><td>" + li.room + " room,"
+                  + li.bookcase + " bookcase," + li.bookshelf + " bookshelf</td>"
+                  + "<td>" + (li.status=="INSTOCK"?"<span class=\"glyphicon glyphicon-ok text-success\"></span>":"<span class=\"glyphicon glyphicon-remove text-danger\"></span>") + "</td></tr>"
+                 ;
+              });
+              libraryItems = "<td><table class= \"table table-striped\"><thead><th>Place</th><th>In stock</th><thead>"
+                + "<tbody>" + libraryItems + "</tbody></table></td>";
+              $("<tr>"
+                + title  
+                + authors 
+                + publishingHouse 
+                + libraryItems + "</tr>").appendTo( "#bookdata" );
+            }); 
+            
+            
+          });
+          
+        }
+        );
+        
+
+    </script>
+  </body>
+</html>

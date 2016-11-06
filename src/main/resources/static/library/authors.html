@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Library</title>
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table-locale-all.min.js"></script>
+  
+    <link rel="import" href="navigation.html">
+    
+  </head>
+  
+  <body>
+    
+    <script>
+      var link = document.querySelector('link[rel=import]');
+      var content = link.import.querySelector('#navigation');
+      document.body.appendChild(content.cloneNode(true));
+    </script>
+  
+    <div class="container">
+      <div class="jumbotron">
+        <h3>Authors</h3> 
+        <p>Find authors and their books.</p> 
+      </div>
+    </div>
+     
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6">
+          <table id="authortable" class="table table-bordered table-hover">
+            <thead>
+                <tr>                
+                    <th>Author Name</th>                
+                </tr>
+            </thead>
+            <tbody id=authordata>
+            </tbody>
+          </table>
+          <div class="alert alert-info">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            Click on a record to see the author's books.
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <p id = "authorbooks"> </p>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      $(document).ready(function () {
+         $.getJSON( "../authors/", function( data ) {
+            console.log(data);
+           
+               
+            $.each( data, function( key, author ) {              
+              name = "<td>" + author.name + "</td>";
+              
+              $("<tr onclick=\"findBook(" + author.id + ",'"+ author.name +"')\">"
+                + name  
+                + "</tr>").appendTo( "#authordata" );
+            }); 
+            
+            
+          });
+          
+        }
+        );
+      
+      function findBook(id, name) {
+        $("#authorbooksdata").remove();
+        $("<p id = 'authorbooksdata'></p>").appendTo( "#authorbooks" );
+        $("<h4> Books by "
+                + name  
+          + "</h4>").appendTo( "#authorbooksdata" );
+          
+        $.getJSON( "../books/author?authorId=" + id, function( data ) {
+            console.log(data);           
+            books = "";   
+            $.each( data, function( key, book ) {              
+              title = book[0].title;
+              
+              books = books + "<li>" + title + "</li>";
+            }); 
+            
+            $("<ul>"
+              + books
+              +"</ul>").appendTo( "#authorbooksdata" );
+          });
+      }  
+
+    </script>
+  </body>
+</html>

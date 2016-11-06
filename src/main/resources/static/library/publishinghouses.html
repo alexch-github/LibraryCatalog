@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Library</title>
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table-locale-all.min.js"></script>
+  
+    <link rel="import" href="navigation.html">
+    
+  </head>
+  
+  <body>
+    
+    <script>
+      var link = document.querySelector('link[rel=import]');
+      var content = link.import.querySelector('#navigation');
+      document.body.appendChild(content.cloneNode(true));
+    </script>
+  
+    <div class="container">
+      <div class="jumbotron">
+        <h3>Publishing Houses</h3> 
+        <p>Find publishing houses and their books.</p> 
+      </div>
+    </div>
+     
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6">
+          <table id="publishinghousetable" class="table table-bordered table-hover">
+            <thead>
+                <tr>                
+                    <th>Publishing House Name</th>                
+                </tr>
+            </thead>
+            <tbody id=publishinghousedata>
+            </tbody>
+          </table>
+          <div class="alert alert-info">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            Click on a record to see the Publishing House's books.
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <p id = "publishinghousebooks"> </p>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      $(document).ready(function () {
+         $.getJSON( "../publishingHouses/", function( data ) {
+            console.log(data);
+           
+               
+            $.each( data, function( key, publishingHouse ) {              
+              name = "<td>" + publishingHouse.name + "</td>";
+              
+              $("<tr onclick=\"findBook(" + publishingHouse.id + ",'"+ publishingHouse.name +"')\">"
+                + name  
+                + "</tr>").appendTo( "#publishinghousedata" );
+            }); 
+            
+            
+          });
+          
+        }
+        );
+      
+      function findBook(id, name) {
+        $("#publishinghousebooksdata").remove();
+        $("<p id = 'publishinghousebooksdata'></p>").appendTo( "#publishinghousebooks" );
+        $("<h4> Books of "
+                + name  
+          + "</h4>").appendTo( "#publishinghousebooksdata" );
+          
+        $.getJSON( "../books/publishingHouse?publishingHouseId=" + id, function( data ) {
+            console.log(data);           
+            books = "";   
+            $.each( data, function( key, book ) {              
+              title = book[0].title;
+              
+              books = books + "<li>" + title + "</li>";
+            }); 
+            
+            $("<ul>"
+              + books
+              +"</ul>").appendTo( "#publishinghousebooksdata" );
+          });
+      }  
+
+    </script>
+  </body>
+</html>

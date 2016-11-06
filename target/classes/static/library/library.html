@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Library</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  
+  <link rel="import" href="navigation.html">
+  
+</head>
+<body>
+
+  <script>
+      var link = document.querySelector('link[rel=import]');
+      var content = link.import.querySelector('#navigation');
+      document.body.appendChild(content.cloneNode(true));
+  </script>
+    
+  <div class="container">
+    <div class="jumbotron">
+      <h3>Welcome to Library Catalog</h3>
+      <p>Choose a page with the information you need.</p>
+    </div>
+  </div>
+  
+  <div id="additionalFunctionsForTesting">
+    <a href="..\books\init">Add DB records for testing.</a>
+  </div>
+
+</body>
+</html>
